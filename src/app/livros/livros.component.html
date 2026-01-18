@@ -1,0 +1,344 @@
+<div class="container">
+  <div class="columns is-justify-content-center m-4">
+    <div class="column is-centered is-10 table-container box is-scrollable">
+      <table class="table is-striped is-hoverable is-fullwidth" aria-describedby="Tabela de livros">
+        <thead>
+          <tr>
+            <th scope="col"></th>
+            <th scope="col">ID</th>
+            <th scope="col">Título</th>
+            <th scope="col">Autor</th>
+            <th scope="col">ISBN</th>
+            <th scope="col">Data de Publicação</th>
+            <th scope="col">Categoria</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let livro of livros">
+            <td>
+              <input
+                class="form-check-input mt-0 align-middle"
+                type="radio"
+                id="idRadio"
+                name="nmRadio"
+                aria-label="Radio button para um item da lista de livros"
+                (change)="selecionarLivro(livro)"
+              />
+            </td>
+            <th scope="row">{{ livro.id }}</th>
+            <td>{{ livro.titulo }}</td>
+            <td>{{ livro.autor }}</td>
+            <td>{{ livro.isbn }}</td>
+            <td>{{ livro.dataPublicacao | date: 'shortDate' }}</td>
+            <td>{{ livro.categoria }}</td>
+          </tr>
+        </tbody>
+        <tbody *ngIf="livros.length === 0">
+          <tr>
+            <td colspan="7" class="has-text-centered">
+              <div class="is-flex is-flex-direction-column is-align-items-center py-6">
+                <p class="is-size-5 has-text-weight-semibold">Nenhum livro encontrado</p>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="columns is-justify-content-center m-4">
+    <div class="column is-fullwidth is-10">
+      <div class="buttons is-justify-content-flex-end">
+        <button class="button is-success" type="button" (click)="cadastrar()">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            class="bi bi-plus-square-fill"
+            viewBox="0 0 16 16"
+          >
+            <path
+              d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0z"
+            />
+          </svg>
+          Cadastrar
+        </button>
+        <button class="button is-warning" type="button" (click)="alterar()">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            class="bi bi-pencil-square"
+            viewBox="0 0 16 16"
+          >
+            <path
+              d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"
+            />
+            <path
+              fill-rule="evenodd"
+              d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"
+            />
+          </svg>
+          Alterar
+        </button>
+        <button class="button is-danger" type="button" (click)="deletar()">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            class="bi bi-trash3-fill"
+            viewBox="0 0 16 16"
+          >
+            <path
+              d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z"
+            />
+          </svg>
+          Remover
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" [class.is-active]="modal.cadastrar">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Cadastrar Livro</p>
+      <button class="delete" aria-label="close" (click)="fecharModal('cadastrar')"></button>
+    </header>
+    <section class="modal-card-body">
+      <div class="field is-horizontal">
+        <div class="field-label is-normal">
+          <label class="label">Título</label>
+        </div>
+        <div class="field-body">
+          <div class="field">
+            <p class="control is-expanded">
+              <input class="input" type="text" [(ngModel)]="livroCadastro.titulo" />
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="field is-horizontal">
+        <div class="field-label is-normal">
+          <label class="label">Autor</label>
+        </div>
+        <div class="field-body">
+          <div class="field">
+            <p class="control is-expanded">
+              <input class="input" type="text" [(ngModel)]="livroCadastro.autor" />
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="field is-horizontal">
+        <div class="field-label is-normal">
+          <label class="label">ISBN</label>
+        </div>
+        <div class="field-body">
+          <div class="field">
+            <p class="control is-expanded">
+              <input class="input" type="number" [(ngModel)]="livroCadastro.isbn" />
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="field is-horizontal">
+        <div class="field-label is-normal">
+          <label class="label">Data de Publicação</label>
+        </div>
+        <div class="field-body">
+          <div class="field">
+            <p class="control is-expanded">
+              <input class="input" type="date" [(ngModel)]="livroCadastro.dataPublicacao" />
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="field is-horizontal">
+        <div class="field-label is-normal">
+          <label class="label">Categoria</label>
+        </div>
+        <div class="field-body">
+          <div class="field is-normal">
+            <div class="control">
+              <div class="select is-fullwidth">
+                <select [(ngModel)]="livroCadastro.categoria">
+                  <option *ngFor="let categoria of categorias" [value]="categoria">
+                    {{ categoria }}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <footer class="modal-card-foot">
+      <button class="button is-success" (click)="cadastrarLivro()">Cadastrar</button>
+      <button class="button" (click)="fecharModal('cadastrar')">Cancelar</button>
+    </footer>
+  </div>
+</div>
+
+<div class="modal" [class.is-active]="modal.alterar">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Alterar Livro</p>
+      <button class="delete" aria-label="close" (click)="fecharModal('alterar')"></button>
+    </header>
+    <section class="modal-card-body">
+      <div class="field is-horizontal">
+        <div class="field-label is-normal">
+          <label class="label">ID</label>
+        </div>
+        <div class="field-body">
+          <div class="field">
+            <p class="control is-expanded">
+              <input class="input" type="number" [disabled]="true" [value]="livroSelecionado.id" />
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="field is-horizontal">
+        <div class="field-label is-normal">
+          <label class="label">Título</label>
+        </div>
+        <div class="field-body">
+          <div class="field">
+            <p class="control is-expanded">
+              <input class="input" type="text" [(ngModel)]="livroSelecionado.titulo" />
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="field is-horizontal">
+        <div class="field-label is-normal">
+          <label class="label">Autor</label>
+        </div>
+        <div class="field-body">
+          <div class="field">
+            <p class="control is-expanded">
+              <input class="input" type="text" [(ngModel)]="livroSelecionado.autor" />
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="field is-horizontal">
+        <div class="field-label is-normal">
+          <label class="label">ISBN</label>
+        </div>
+        <div class="field-body">
+          <div class="field">
+            <p class="control is-expanded">
+              <input class="input" type="number" [(ngModel)]="livroSelecionado.isbn" />
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="field is-horizontal">
+        <div class="field-label is-normal">
+          <label class="label">Data de Publicação</label>
+        </div>
+        <div class="field-body">
+          <div class="field">
+            <p class="control is-expanded">
+              <input class="input" type="date" [(ngModel)]="livroSelecionado.dataPublicacao" />
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="field is-horizontal">
+        <div class="field-label is-normal">
+          <label class="label">Categoria</label>
+        </div>
+        <div class="field-body">
+          <div class="field is-normal">
+            <div class="control">
+              <div class="select is-fullwidth">
+                <select [(ngModel)]="livroSelecionado.categoria">
+                  <option *ngFor="let categoria of categorias" [value]="categoria">
+                    {{ categoria }}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <footer class="modal-card-foot">
+      <button class="button is-success" (click)="alterarLivro()">Alterar</button>
+      <button class="button" (click)="fecharModal('alterar')">Cancelar</button>
+    </footer>
+  </div>
+</div>
+
+<div class="modal" [class.is-active]="modal.deletar">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Remover Livro</p>
+      <button class="delete" aria-label="close" (click)="fecharModal('deletar')"></button>
+    </header>
+    <section class="modal-card-body">
+      <div class="field is-horizontal">
+        <div class="field-label is-normal">
+          <label class="label">ID</label>
+        </div>
+        <div class="field-body">
+          <div class="field">
+            <p class="control is-expanded">
+              <input class="input" type="number" [disabled]="true" [value]="livroSelecionado.id" />
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="field is-horizontal">
+        <div class="field-label is-normal">
+          <label class="label">Título</label>
+        </div>
+        <div class="field-body">
+          <div class="field">
+            <p class="control is-expanded">
+              <input
+                class="input"
+                type="text"
+                [disabled]="true"
+                [value]="livroSelecionado.titulo"
+              />
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <footer class="modal-card-foot">
+      <button class="button is-success" (click)="deletarLivro()">Remover Livro</button>
+      <button class="button" (click)="fecharModal('deletar')">Cancelar</button>
+    </footer>
+  </div>
+</div>
+
+<div class="modal" [class.is-active]="modal.alerta">
+  <div class="modal-background"></div>
+
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Aviso</p>
+      <button class="delete" aria-label="close" (click)="fecharModal('alerta')"></button>
+    </header>
+
+    <section class="modal-card-body">
+      {{ msgModal }}
+    </section>
+
+    <footer class="modal-card-foot is-justify-content-flex-end">
+      <button class="button is-link" (click)="fecharModal('alerta')">Ok</button>
+    </footer>
+  </div>
+</div>
