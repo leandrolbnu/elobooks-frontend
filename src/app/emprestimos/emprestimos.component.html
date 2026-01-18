@@ -1,0 +1,222 @@
+<div class="container">
+  <div class="columns is-justify-content-center m-4">
+    <div class="column is-5">
+      <div class="field is-horizontal">
+        <div class="field-label is-normal">
+          <label class="label">Usuário</label>
+        </div>
+        <div class="field-body">
+          <div class="field has-addons">
+            <div class="control is-expanded">
+              <div class="select is-fullwidth">
+                <select aria-label="Selecionar o usuário" [(ngModel)]="usuarioSelecionado">
+                  <option *ngFor="let usuario of usuarios" [ngValue]="usuario">
+                    {{ usuario.nome }}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="control">
+              <a class="button is-link" (click)="buscarEmprestimos()"> Pesquisar </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="columns is-justify-content-center m-4" *ngIf="emprestimos.length > 0">
+    <div class="column is-centered is-10 table-container box is-scrollable">
+      <table
+        class="table is-striped is-hoverable is-fullwidth"
+        aria-describedby="Tabela de livros emprestados"
+      >
+        <thead>
+          <tr>
+            <th scope="col"></th>
+            <th scope="col">ID</th>
+            <th scope="col">Livro</th>
+            <th scope="col">Data de Empréstimo</th>
+            <th scope="col">Data de Devolução</th>
+            <th scope="col">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let emprestimo of emprestimos">
+            <td>
+              <input
+                class="form-check-input mt-0 align-middle"
+                type="radio"
+                id="idRadio"
+                name="nmRadio"
+                aria-label="Radio button para um item da lista de empréstimos"
+                (change)="selecionarEmprestimo(emprestimo)"
+              />
+            </td>
+            <th scope="row">{{ emprestimo.id }}</th>
+            <td>{{ emprestimo.livro.titulo }}</td>
+            <td>{{ emprestimo.dataEmprestimo | date: 'shortDate' }}</td>
+            <td>{{ emprestimo.dataDevolucao | date: 'shortDate' }}</td>
+            <td>{{ emprestimo.status }}</td>
+          </tr>
+        </tbody>
+        <tbody *ngIf="emprestimos.length === 0">
+          <tr>
+            <td colspan="6" class="has-text-centered">
+              <div class="is-flex is-flex-direction-column is-align-items-center py-6">
+                <p class="is-size-5 has-text-weight-semibold">Nenhum empréstimo encontrado</p>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="columns is-justify-content-center m-4">
+    <div class="column is-fullwidth is-10">
+      <div class="buttons is-justify-content-flex-end">
+        <button
+          class="button is-success"
+          type="button"
+          (click)="emprestar()"
+          *ngIf="usuarioSelecionado"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            class="bi bi-plus-square-fill"
+            viewBox="0 0 16 16"
+          >
+            <path
+              d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0z"
+            />
+          </svg>
+          Novo Empréstimo
+        </button>
+        <button
+          class="button is-warning"
+          type="button"
+          (click)="devolver()"
+          *ngIf="emprestimoSelecionado && emprestimoSelecionado.status == 'EMPRESTADO'"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            class="bi bi-pencil-square"
+            viewBox="0 0 16 16"
+          >
+            <path
+              d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"
+            />
+            <path
+              fill-rule="evenodd"
+              d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"
+            />
+          </svg>
+          Devolver
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" [class.is-active]="modal.cadastrar">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Cadastrar Empréstimo</p>
+      <button class="delete" aria-label="close" (click)="fecharModal('cadastrar')"></button>
+    </header>
+    <section class="modal-card-body">
+      <div class="field">
+        <label class="label">Livro</label>
+        <div class="control">
+          <div class="select is-fullwidth">
+            <select [(ngModel)]="livroSelecionado">
+              <option *ngFor="let livro of livros" [ngValue]="livro">
+                {{ livro.titulo }}
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </section>
+    <footer class="modal-card-foot">
+      <button class="button is-success" (click)="cadastrarEmprestimo()">Cadastrar</button>
+      <button class="button" (click)="fecharModal('cadastrar')">Cancelar</button>
+    </footer>
+  </div>
+</div>
+
+<div class="modal" [class.is-active]="modal.deletar">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Devolver Livro</p>
+      <button class="delete" aria-label="close" (click)="fecharModal('deletar')"></button>
+    </header>
+    <section class="modal-card-body">
+      <div class="field is-horizontal">
+        <div class="field-label is-normal">
+          <label class="label">ID</label>
+        </div>
+        <div class="field-body">
+          <div class="field">
+            <p class="control is-expanded">
+              <input
+                class="input"
+                type="number"
+                [disabled]="true"
+                [value]="emprestimoSelecionado?.id"
+              />
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="field is-horizontal">
+        <div class="field-label is-normal">
+          <label class="label">Título</label>
+        </div>
+        <div class="field-body">
+          <div class="field">
+            <p class="control is-expanded">
+              <input
+                class="input"
+                type="text"
+                [disabled]="true"
+                [value]="emprestimoSelecionado?.livro?.titulo"
+              />
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <footer class="modal-card-foot">
+      <button class="button is-success" (click)="devolverLivro()">Devolver Livro</button>
+      <button class="button" (click)="fecharModal('deletar')">Cancelar</button>
+    </footer>
+  </div>
+</div>
+
+<div class="modal" [class.is-active]="modal.alerta">
+  <div class="modal-background"></div>
+
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Aviso</p>
+      <button class="delete" aria-label="close" (click)="fecharModal('alerta')"></button>
+    </header>
+
+    <section class="modal-card-body">
+      {{ msgModal }}
+    </section>
+
+    <footer class="modal-card-foot is-justify-content-flex-end">
+      <button class="button is-link" (click)="fecharModal('alerta')">Ok</button>
+    </footer>
+  </div>
+</div>
